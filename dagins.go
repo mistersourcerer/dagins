@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"os"
 )
 
 func main() {
@@ -10,18 +11,28 @@ func main() {
 	v := flag.Bool("v", false, "Show this dagins version.")
 	flag.Parse()
 
+	if len(os.Args) == 1 {
+		flag.Usage()
+
+		return
+	}
+
+	goal := flag.NewFlagSet("goal", flag.ExitOnError)
+	goal.String("create", "", "A name for your goal.")
+	goal.Parse(os.Args[2:])
+
 	switch {
 	case *version || *v:
 		showVersion()
 	default:
-		dagins()
+		// currently only handle goal subcommand. :(((
+		// haha, it is fine though. Still very much just exploring :)
+		if len(os.Args[2:]) == 0 {
+			goal.Usage()
+		}
 	}
 }
 
 func showVersion() {
 	fmt.Println("dagins version 0.0.1a")
-}
-
-func dagins() {
-	fmt.Println("JUST DO IT! STAY ON TARGET! YOURS TRULY, DAGINS!")
 }
