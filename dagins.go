@@ -28,6 +28,8 @@ func main() {
 		// haha, it is fine though. Still very much just exploring :)
 		if len(os.Args[2:]) == 0 {
 			goal.Usage()
+		} else {
+			HandleGoal(os.Args[2:])
 		}
 	}
 }
