@@ -11,7 +11,7 @@ Set _habit creation_ goal:
     $ dagins goal create "learn go" --daily
     # --daily is the default flag
 
-Then check if you paid your bills are paid:
+Then check if your bills are paid:
 
     $ dagins goal status "learn go"
     ➜ Do it!
