@@ -18,7 +18,6 @@ func main() {
 	}
 
 	goal := flag.NewFlagSet("goal", flag.ExitOnError)
-	goal.String("create", "", "A name for your goal.")
 	goal.Parse(os.Args[2:])
 
 	switch {
