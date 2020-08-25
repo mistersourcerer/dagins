@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"os"
 )
 
@@ -15,36 +14,46 @@ type goal struct {
 func HandleGoal(cmd []string) {
 	switch command := cmd[0]; command {
 	case "create":
-		if len(cmd[1:]) < 1 {
-			fmt.Println("goal need a name")
-			fmt.Println("  $ dagins goal create 'read one page'")
-		} else {
-			// extract periodicity
-			create(cmd[1], "daily")
-		}
+		create(cmd)
 	}
 }
 
-func create(name string, periodicity string) {
-	// validate periodicity
-	fmt.Println("Creating", name, periodicity)
-	newGoal := goal{Name: name, Periodicity: periodicity}
-	save(&newGoal)
+func create(parameters []string) {
+	if len(parameters[1:]) < 1 {
+		fmt.Println("goal need a name")
+		fmt.Println("  $ dagins goal create 'read one page'")
+	} else {
+		name := parameters[1]
+
+		// extract periodicity
+		periodicity := "daily"
+
+		// validate periodicity
+		fmt.Println("Creating", name, periodicity)
+		newGoal := goal{Name: name, Periodicity: periodicity}
+		save(&newGoal)
+	}
 }
 
 func save(newGoal *goal) {
-	// handle error
-	os.Mkdir(".dagins", 0755)
+	goalJSON, err := json.Marshal(newGoal)
+	if err != nil {
+		panic(err)
+	}
+	fileAppend(goalJSON)
+}
+
+func fileAppend(goalJSON []byte) {
+	path := ".dagins"
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		os.Mkdir(path, 0755)
+	}
 
 	f, err := os.OpenFile(".dagins/goals.json", os.O_RDWR|os.O_CREATE|os.O_APPEND, 0755)
 	if err != nil {
-		log.Fatal(err)
-		return
+		panic(err)
 	}
 	defer f.Close()
-
-	// handle error
-	goalJSON, err := json.Marshal(newGoal)
 
 	// handle error
 	f.Write(goalJSON)
